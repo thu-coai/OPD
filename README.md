@@ -7,7 +7,7 @@
 <p align="center">
   <a href="https://lingyou-1302942961.cos.ap-beijing.myqcloud.com/lingyou/166753329455537e99a85-0d50-4a67-bc66-20ebaac526a2.PNG">Demo(微信公众号)</a> •
   <a href="http://coai.cs.tsinghua.edu.cn/static/opd/posts/opd_blog/">博客</a> •
-  <a href="https://wj.qq.com/s2/11090780/b60a/">模型申请</a> 
+  <a href="https://fatocijyic.feishu.cn/docx/MRW0duajYoeTB3xgOaPcsFOInnd">模型申请</a> 
 </p>
 
 
