@@ -1,3 +1,4 @@
+
 ![图片](https://lingyou-1302942961.cos.ap-beijing.myqcloud.com/lingyou/166747137310657482761-5415-450b-a792-701f66b87229.png)
 ------
 
@@ -5,11 +6,9 @@
 
 
 <p align="center">
-  <a href="https://lingyou-1302942961.cos.ap-beijing.myqcloud.com/lingyou/166753329455537e99a85-0d50-4a67-bc66-20ebaac526a2.PNG">Demo(微信公众号)</a> •
-  <a href="http://coai.cs.tsinghua.edu.cn/static/opd/posts/opd_blog/">博客</a> •
-  <a href="https://fatocijyic.feishu.cn/docx/MRW0duajYoeTB3xgOaPcsFOInnd">模型申请</a> 
+  <a href="">Demo(微信公众号)</a> •
+  <a href="">博客</a> •
 </p>
-
 
 
 # OPD：中文开放域对话预训练模型
@@ -26,99 +25,98 @@ OPD是一个中文开放域对话预训练模型，拥有63亿参数，在70GB�
 
   - **多维度中文对话评价模型**：[对话信息量](https://huggingface.co/thu-coai/roberta-zh-specific)、[相关性](https://huggingface.co/thu-coai/roberta-zh-sensible)、[一致性](https://huggingface.co/thu-coai/roberta-base-cdconv)、[安全性](https://huggingface.co/thu-coai/roberta-base-cold?text=%E6%88%91%E5%96%9C%E6%AC%A2%E4%BD%A0%E3%80%82+%E6%88%91%E7%88%B1%E4%BD%A0)等多个维度各自的评价模型。
 
-![Alt Text](https://lingyou-1302942961.cos.ap-beijing.myqcloud.com/lingyou/1667550295655b055f894-2175-4b88-89ee-04b4b8cacbfb.gif)
+![Alt Text](pic/multiturn.gif)
 
 ![图片](https://lingyou-1302942961.cos.ap-beijing.myqcloud.com/lingyou/1667550036683b4d9d64c-b8d9-463d-b06b-35648a84f323.png)
 
-## 性能
 
-### 自动评测
+## 参数下载
 
-我们构建了包含500条对话数据的高质量评测集，并首先在该评测集上进行了自动评测。OPD在BLEU-4和F1等自动指标上均能达到现有中文对话模型的最优性能，同时在多样性指标Distinct-3/4上也能达到与PLATO相近的性能。
+OPD模型可从[此处](https://cloud.tsinghua.edu.cn/d/ea490ba85640419785b5/)下载
 
-![图片](https://lingyou-1302942961.cos.ap-beijing.myqcloud.com/lingyou/1667550074117dd526d29-3122-4f8c-8af9-125b04bc922f.png)
+下载完成后，需将拆分后的参数文件合并。
 
-### 人工评测（静态）
+假设下载后的参数文件路径为`results/opd`, 可按如下方式合并
+```
+cd src
+python tools/merge_checkpoint.py --ckpt_path ../results/opd
+```
 
-我们进一步在包含500条对话数据的评测集上进行了静态人工评测。针对每条对话数据的输入信息，使所有模型都生成回复，每条回复由3位标注者在一致性、相关性、具体性上按照1-3分的尺度来进行打分。OPD在具体性上能够超过所有基线模型达到最优性能，在一致性和相关性上也能和最优的基线模型达到相似的性能。
+## 环境配置
 
-然后我们进行了配对的静态人工评测，具体做法是针对每条对话数据的输入信息，由OPD和基线模型分别生成回复，然后由标注者挑选其中总体质量更高的回复。OPD在配对人工评测中能够优于所有基线模型，达到目前中文对话模型的最优性能。
+- python 3.8, cuda 10.2
 
-![图片](https://lingyou-1302942961.cos.ap-beijing.myqcloud.com/lingyou/1667550111585c2a44aea-e69d-48a5-953c-de14791da16c.png)
+- `pip install -r requirements.txt`
 
-### 人工评测（多轮交互）
+## 运行代码
 
-我们还招募了15位标注者进行了多轮交互式人工评测。每位标注者需预先选定3个话题及对话开头，分别和各个中文对话模型进行对话，我们要求每次对话的轮数至少为16。标注者在交互后根据一致性、相关性和具体性三个维度按照1-5分的尺度进行打分，并按照总体质量对不同对话模型在同一个对话开头的表现进行偏好选择。交互式评测的结果和静态评测相似，OPD在具体性和总体质量上显著超过了所有基线模型，而在一致性和相关性上与最优基线模型表现相近。
+在运行前，需将脚本中的`PROJECT_DIR`, `CKPT_PATH`等路径根据实际情况进行修改
 
-![图片](https://lingyou-1302942961.cos.ap-beijing.myqcloud.com/lingyou/1667550148821ee0d26aa-d60d-4797-871b-cc95cd3763cc.png)
+### 交互
 
-### 交互样例
 
-![图片](https://lingyou-1302942961.cos.ap-beijing.myqcloud.com/lingyou/166754875054784293da6-dedd-4f14-a623-d4dca80a080d.png)
+```bash
+cd src
+bash scripts/interactive.sh
+```
 
-## 预训练
+### 静态生成
 
-### 预训练数据集
+- 数据格式: 每行一个session, 包含N个utterance, 用`\t`分隔。前N-1个utterance作为context输入
+- 执行生成
+```bash
+cd bsah
+bash scripts/inference_static.sh
 
-OPD使用的数据均来自**公开可爬取、可访问**的数据源。我们在实验中发现，相比于通用预训练语言模型，对话预训练模型对于数据的质量更加敏感。因此，我们设计了严格、全面的数据清洗流程，最终筛选出70GB高质量对话数据用于OPD的预训练，清洗前后的数据留存比约10%。
+# 关键参数:
+# 输入路径: $TEST_FILE
+# 输出路径: $OUT_FILE
+# 模型文件: $CKPT
+```
 
-### 模型架构
 
-OPD采用UniLM架构，共包含6.3B参数，采用语言模型作为预训练任务。为保证OPD的多轮对话能力，我们将模型最大截断长度设为512。OPD在预训练阶段引入了soft prompt，以促进下游任务上参数高效的微调。更多细节将在后续发布的技术报告中说明。
+### 训练
 
-## 未来工作
+#### 准备训练数据
 
-OPD目前仍处于“**初生**”状态，我们欢迎广大用户和研究人员加入OPD的社区，共同推进中文对话的发展。CoAI小组也将继续扎根中文对话领域，持续优化OPD。未来的发展方向如下：
+1. 截断数据
+```bash
+bash scripts/prepare_data.sh
 
-- **从人类反馈中学习**：与人类交互是对话模型最自然的应用方式，我们也在交互实验中发现了当前版本OPD存在的一些缺陷。在部署OPD后，我们将根据human-bot的交互反馈，持续改进OPD的性能，并定期发布版本迭代，与中文对话社区分享我们最新的成果。
-- **OPD的持续微调**：我们将通过持续微调的方式，赋予OPD新的下游技能（例如：情感安抚、知识检索），进一步提升OPD的表现。
+# 关键参数:
+# INPUT_PATH: 输入数据路径。输入数据的格式为每行一个context-response pair, 用\t分隔
+# OUTPUT_PATH: 输出的目录，输出文件会放置在${OUTPUT_PATH}/data.txt中。输出数据的格式为 每行一个dict, 包含source和target两个字段，分别代表context和response。
+# max_seq_len: 截断长度，默认设置为512
+```
 
-## 贡献
+2. tokenize
+```bash
+bash scripts/encode_data.sh
 
-### 前期准备
+# 关键参数:
+# INPUT_PATH: 输入数据，即上一步的输出文件
+# OUTPUT_PATH: 输出的目录。执行完成后会新增四个文件, dialog_context_0.bin, dialog_context_0.idx, dialog_target_0.bin, dialog_target_0.idx
+```
 
-**模型架构设计与实现：**
-温佳鑫
+#### 开始训练
 
-**预实验(收敛速度、稳定性)：**
-温佳鑫
+```bash
+bash scripts/train.sh
 
-**预训练数据集构建：**
-宋溢
+# 关键参数:
+# GPUS_PER_NODE: 单机的卡数
+# DATASET: 数据路径。${DATASET}/train, ${DATASET}/valid两个文件夹分别存放了处理好的训练集和验证集
+# --load: 是否load参数
+```
 
-**技术指导：**
-柯沛，顾煜贤
+## 引用
 
-### 模型训练
-
-**大规模预训练：**
-温佳鑫
-
-### 后期工作
-
-**模型评测(自动)：**
-温佳鑫，万大振，宋溢
-
-**模型评测(人工)：**
-宋溢，魏文，温佳鑫
-
-**模型服务部署(API，demo):**
-宋溢，彭立彪，杨家铭
-
-**对话评价模型：**
-宋溢，郑楚杰，邓佳文
-
-**博客写作：**
-温佳鑫，柯沛
-
-### 总项目周期
-
-**学生负责人：**
-温佳鑫
-
-**项目总负责：**
-黄民烈
-
-## 致谢
-
-感谢华为，OPPO提供的支持
+```
+@misc{opd2023,
+    title = {OPD: A Chinese Open-Domain Dialogue Pre-trained Model},
+    url = {http://coai.cs.tsinghua.edu.cn/static/opd/posts/opd_blog/},
+    author = {Jiaxin Wen and Yi Song and Pei Ke and Minlie Huang},
+    month = {May},
+    year = {2023}
+}
+```
