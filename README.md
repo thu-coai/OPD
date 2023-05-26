@@ -25,11 +25,9 @@
 
   - **多维度中文对话评价模型**：[对话信息量](https://huggingface.co/thu-coai/roberta-zh-specific)、[相关性](https://huggingface.co/thu-coai/roberta-zh-sensible)、[一致性](https://huggingface.co/thu-coai/roberta-base-cdconv)、[安全性](https://huggingface.co/thu-coai/roberta-base-cold?text=%E6%88%91%E5%96%9C%E6%AC%A2%E4%BD%A0%E3%80%82+%E6%88%91%E7%88%B1%E4%BD%A0)等多个维度各自的评价模型。
 
-![Alt Text](pic/multiturn.gif)
-![Alt Text](pic/multiturn.gif)
-![Alt Text](pic/multiturn.gif)
+![Alt Text](https://lingyou-1302942961.cos.ap-beijing.myqcloud.com/lingyou/1667550295655b055f894-2175-4b88-89ee-04b4b8cacbfb.gif)
 
-
+![图片](https://lingyou-1302942961.cos.ap-beijing.myqcloud.com/lingyou/1ab102b0-1050-4d78-afcf-d14874ac5e18.png)
 
 
 ## 参数下载
