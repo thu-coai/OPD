@@ -41,9 +41,9 @@ OPD模型可从[此处](https://cloud.tsinghua.edu.cn/d/ea490ba85640419785b5/)�
 cd src
 python tools/merge_checkpoint.py --ckpt_path ../results/opd
 ```
-python tools/merge_checkpoint.py --ckpt_path ../results/opd
+
 ## 环境配置
-python tools/merge_checkpoint.py --ckpt_path ../results/opd
+
 - python 3.8, cuda 10.2
 
 - `pip install -r requirements.txt`
@@ -59,13 +59,13 @@ python tools/merge_checkpoint.py --ckpt_path ../results/opd
 cd src
 bash scripts/interactive.sh
 ```
-```bash
+
 ### 静态生成
-bash scripts/interactive.sh
+
 - 数据格式: 每行一个session, 包含N个utterance, 用`\t`分隔。前N-1个utterance作为context输入
 - 执行生成
 ```bash
-cd bsah
+cd src
 bash scripts/inference_static.sh
 
 # 关键参数:
@@ -73,12 +73,11 @@ bash scripts/inference_static.sh
 # 输出路径: $OUT_FILE
 # 模型文件: $CKPT
 ```
-```bash
-- 执行生成
+
 ### 训练
-cd bsah
+
 #### 准备训练数据
-bash scripts/interactive.sh
+
 1. 截断数据
 ```bash
 bash scripts/prepare_data.sh
@@ -87,28 +86,25 @@ bash scripts/prepare_data.sh
 # INPUT_PATH: 输入数据路径。输入数据的格式为每行一个context-response pair, 用\t分隔
 # OUTPUT_PATH: 输出的目录，输出文件会放置在${OUTPUT_PATH}/data.txt中。输出数据的格式为 每行一个dict, 包含source和target两个字段，分别代表context和response。
 # max_seq_len: 截断长度，默认设置为512
-```
 # GPUS_PER_NODE: 单机的卡数
+```
+
 2. tokenize
 ```bash
 bash scripts/encode_data.sh
-```
 # 关键参数:
 # INPUT_PATH: 输入数据，即上一步的输出文件
 # OUTPUT_PATH: 输出的目录。执行完成后会新增四个文件, dialog_context_0.bin, dialog_context_0.idx, dialog_target_0.bin, dialog_target_0.idx
 ```
 
 #### 开始训练
-@misc{opd2023,
 ```bash
 bash scripts/train.sh
-    author = {Jiaxin Wen and Yi Song and Pei Ke and Minlie Huang},
 # 关键参数:
 # GPUS_PER_NODE: 单机的卡数
 # DATASET: 数据路径。${DATASET}/train, ${DATASET}/valid两个文件夹分别存放了处理好的训练集和验证集
 # --load: 是否load参数
 ```
-}
 ## 引用
 ```
 @misc{opd2023,
